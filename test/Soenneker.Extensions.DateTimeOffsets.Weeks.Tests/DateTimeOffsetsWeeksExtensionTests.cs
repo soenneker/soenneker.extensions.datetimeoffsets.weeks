@@ -1,7 +1,6 @@
 using System;
 using AwesomeAssertions;
 using Soenneker.Tests.Unit;
-using Xunit;
 
 namespace Soenneker.Extensions.DateTimeOffsets.Weeks.Tests;
 
@@ -9,7 +8,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
 {
     // --- ToStartOfWeek / ToEndOfWeek (offset-preserving, delegates to ToStartOf/ToEndOf Week) ---
 
-    [Fact]
+    [Test]
     public void ToStartOfWeek_on_Monday_midnight_returns_same()
     {
         var monday = new DateTimeOffset(2026, 3, 2, 0, 0, 0, TimeSpan.FromHours(-5));
@@ -18,7 +17,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         start.Offset.Should().Be(monday.Offset);
     }
 
-    [Fact]
+    [Test]
     public void ToStartOfWeek_on_Sunday_returns_previous_Monday()
     {
         var sunday = new DateTimeOffset(2026, 3, 8, 23, 59, 59, TimeSpan.Zero);
@@ -26,7 +25,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         start.Should().Be(new DateTimeOffset(2026, 3, 2, 0, 0, 0, TimeSpan.Zero));
     }
 
-    [Fact]
+    [Test]
     public void ToEndOfWeek_is_one_tick_before_next_week_start()
     {
         var wednesday = new DateTimeOffset(2026, 3, 4, 12, 0, 0, TimeSpan.Zero);
@@ -35,7 +34,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         endOfWeek.Should().Be(startOfNextWeek.AddTicks(-1));
     }
 
-    [Fact]
+    [Test]
     public void ToEndOfWeek_and_ToStartOfNextWeek_are_contiguous()
     {
         var any = new DateTimeOffset(2026, 6, 15, 14, 30, 0, TimeSpan.FromHours(2));
@@ -44,7 +43,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         end.AddTicks(1).Should().Be(nextStart);
     }
 
-    [Fact]
+    [Test]
     public void ToStartOfPreviousWeek_and_ToStartOfNextWeek_are_14_days_apart()
     {
         var d = new DateTimeOffset(2026, 3, 5, 0, 0, 0, TimeSpan.Zero);
@@ -53,7 +52,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         (next - prev).TotalDays.Should().Be(14);
     }
 
-    [Fact]
+    [Test]
     public void ToEndOfPreviousWeek_is_one_tick_before_ToStartOfWeek()
     {
         var d = new DateTimeOffset(2026, 3, 5, 0, 0, 0, TimeSpan.Zero);
@@ -62,7 +61,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         endPrev.AddTicks(1).Should().Be(startCur);
     }
 
-    [Fact]
+    [Test]
     public void Non_UTC_offset_is_preserved_on_ToStartOfWeek()
     {
         // 2026-03-04 10:00 +05:00 = Wednesday; week start Monday same offset = 2026-03-02 00:00 +05:00 = 2026-03-01 19:00 UTC
@@ -74,7 +73,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
 
     // --- MinValue / edge dates ---
 
-    [Fact]
+    [Test]
     public void ToStartOfWeek_at_DateTimeOffset_MinValue()
     {
         var min = DateTimeOffset.MinValue;
@@ -83,7 +82,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         start.Offset.Should().Be(min.Offset);
     }
 
-    [Fact]
+    [Test]
     public void ToEndOfWeek_at_DateTimeOffset_MaxValue_does_not_overflow()
     {
         // MaxValue is UTC; end of week is last tick before next week - should still be representable
@@ -95,7 +94,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
 
     // --- Time zone week boundaries (UTC result) ---
 
-    [Fact]
+    [Test]
     public void ToStartOfTzWeek_normalizes_non_UTC_input_to_UTC()
     {
         var utcInstant = new DateTimeOffset(2026, 3, 4, 12, 0, 0, TimeSpan.Zero);
@@ -107,7 +106,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         startUtc.Offset.Should().Be(TimeSpan.Zero);
     }
 
-    [Fact]
+    [Test]
     public void ToStartOfTzWeek_with_Utc_zone_matches_ToStartOfWeek_UTC()
     {
         var d = new DateTimeOffset(2026, 3, 4, 12, 0, 0, TimeSpan.Zero);
@@ -116,7 +115,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         byWeek.Should().Be(byTz);
     }
 
-    [Fact]
+    [Test]
     public void ToStartOfTzWeek_firstDayOfWeek_Sunday_gives_different_boundary_than_Monday()
     {
         // 2026-03-04 12:00 UTC is Wednesday; Monday week start vs Sunday week start differ
@@ -128,7 +127,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         startSunday.Should().Be(new DateTimeOffset(2026, 3, 1, 0, 0, 0, TimeSpan.Zero));
     }
 
-    [Fact]
+    [Test]
     public void ToEndOfTzWeek_is_one_tick_before_ToStartOfNextTzWeek()
     {
         var d = new DateTimeOffset(2026, 3, 4, 12, 0, 0, TimeSpan.Zero);
@@ -139,7 +138,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         end.Offset.Should().Be(TimeSpan.Zero);
     }
 
-    [Fact]
+    [Test]
     public void ToStartOfPreviousTzWeek_and_ToStartOfNextTzWeek_are_14_days_apart_in_local_sense()
     {
         var d = new DateTimeOffset(2026, 3, 4, 12, 0, 0, TimeSpan.Zero);
@@ -149,7 +148,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         (next - prev).TotalDays.Should().Be(14);
     }
 
-    [Fact]
+    [Test]
     public void ToEndOfNextTzWeek_is_one_tick_before_start_of_week_after_next()
     {
         var d = new DateTimeOffset(2026, 3, 4, 12, 0, 0, TimeSpan.Zero);
@@ -173,7 +172,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
     // advances minute-by-minute until valid. So we test that we get a valid result and that
     // start of week in Eastern for an instant in that week is Monday 00:00 Eastern.
 
-    [Fact]
+    [Test]
     public void ToStartOfTzWeek_Eastern_week_containing_DST_spring_forward()
     {
         TimeZoneInfo eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
@@ -187,7 +186,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         start.Should().Be(expected);
     }
 
-    [Fact]
+    [Test]
     public void ToEndOfTzWeek_Eastern_before_DST_spring_forward()
     {
         TimeZoneInfo eastern = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
@@ -202,21 +201,21 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
 
     // --- Week numbers (ISO) ---
 
-    [Fact]
+    [Test]
     public void ToUtcWeekNumber_week_containing_Jan_4_is_week_1()
     {
         var jan4 = new DateTimeOffset(2026, 1, 4, 0, 0, 0, TimeSpan.Zero);
         jan4.ToUtcWeekNumber().Should().Be(1);
     }
 
-    [Fact]
+    [Test]
     public void ToUtcWeekNumber_Jan_1_2026_is_week_1()
     {
         var jan1 = new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
         jan1.ToUtcWeekNumber().Should().Be(1);
     }
 
-    [Fact]
+    [Test]
     public void ToTzWeekNumber_same_as_ToUtcWeekNumber_when_zone_is_UTC()
     {
         var d = new DateTimeOffset(2026, 3, 4, 12, 0, 0, TimeSpan.Zero);
@@ -225,7 +224,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         tzWeek.Should().Be(utcWeek);
     }
 
-    [Fact]
+    [Test]
     public void ToTzWeekNumber_at_year_boundary_can_differ_from_UTC()
     {
         // 2026-01-04 22:00 UTC = Sunday Jan 4 (week 1 in UTC); in Tokyo = Monday Jan 5 07:00 -> week 2
@@ -237,7 +236,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
         tzWeek.Should().Be(2);
     }
 
-    [Fact]
+    [Test]
     public void ToUtcWeekNumber_normalizes_offset_before_computing()
     {
         var utc = new DateTimeOffset(2026, 1, 4, 0, 0, 0, TimeSpan.Zero);
@@ -248,7 +247,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
 
     // --- Weird: default DateTimeOffset (zero date) ---
 
-    [Fact]
+    [Test]
     public void ToStartOfWeek_on_default_DateTimeOffset()
     {
         var d = default(DateTimeOffset);
@@ -259,7 +258,7 @@ public sealed class DateTimeOffsetsWeeksExtensionTests : UnitTest
 
     // --- Round-trip: start then end of same week ---
 
-    [Fact]
+    [Test]
     public void ToStartOfWeek_then_ToEndOfWeek_same_week()
     {
         var d = new DateTimeOffset(2026, 3, 5, 14, 22, 11, TimeSpan.FromHours(-3));
