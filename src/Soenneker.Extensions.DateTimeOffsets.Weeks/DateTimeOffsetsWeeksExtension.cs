@@ -328,7 +328,7 @@ public static class DateTimeOffsetsWeeksExtension
     /// <summary>
     /// Normalizes a <see cref="DateTimeOffset"/> to a UTC instant.
     /// </summary>
-    /// <param name="dto">The input value.</param>
+    /// <param name="dto">The instant to express with a zero UTC offset.</param>
     /// <returns>
     /// A value representing the same instant in time with offset <c>+00:00</c>.
     /// </returns>
